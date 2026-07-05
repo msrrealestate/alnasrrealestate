@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النصر للمقاولات والتشطيبات والعقارات</title>
+    
+    <!-- استدعاء Tailwind CSS وتهيئته لدعم الوضع الليلي عبر الكلاسات -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    
+    <!-- خط Cairo العربي الفخم -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 scroll-smooth">
+
+    <!-- ─── الـ NAVBAR (شريط التنقل العلوي) ─── -->
+    <nav class="bg-white dark:bg-gray-950 shadow-md sticky top-0 z-50 border-b border-gray-100 dark:border-amber-500/20 transition-colors duration-300">
+        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+            <!-- اللوجو والشعار الصحيح لشركة النصر -->
+            <div class="flex items-center space-x-reverse space-x-3">
+                <img src="logo.jpg" alt="لوجو النصر" class="w-12 h-12 object-contain rounded-lg border border-amber-500/20">
+                <div>
+                    <span class="text-base font-black block text-amber-600 dark:text-amber-500">النصر للعقارات</span>
+                    <span class="text-[10px] text-gray-400 block -mt-1 font-bold">ALNASR REAL ESTATE</span>
+                </div>
+            </div>
+            
+            <!-- أزرار التحكم والروابط -->
+            <div class="flex items-center space-x-reverse space-x-4">
+                <div class="hidden md:flex space-x-reverse space-x-6 font-bold text-xs">
+                    <a href="#" class="text-amber-600 dark:text-amber-500">الرئيسية</a>
+                    <a href="#properties-section" class="text-gray-600 dark:text-gray-300 hover:text-amber-600">العروض الحية</a>
+                    <a href="#manager-section" class="text-gray-600 dark:text-gray-300 hover:text-amber-600">المعاينة والتعاقد</a>
+                </div>
+                
+                <!-- زرار لوحة الإدارة السري بالباسورد -->
+                <button onclick="checkAdminPassword()" class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/40 text-amber-600 dark:text-amber-400 hover:scale-105 transition" title="لوحة تحكم إضافة الإعلانات">
+                    <i class="fa-solid fa-gear text-base"></i>
+                </button>
+
+                <!-- ويدجت تحويل المود (Dark / Light) -->
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition shadow-sm" title="تبديل الوضع الليلي/النهاري">
+                    <i id="theme-icon" class="fa-solid fa-moon text-gray-600 dark:text-amber-400 text-base"></i>
+                </button>
+                
+                <!-- رابط الفيسبوك السريع -->
+                <a href="https://www.facebook.com/share/18zVCVdfN6/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow">
+                    <i class="fa-brands fa-facebook text-sm"></i> <span class="hidden sm:inline">فيسبوك</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ─── الـ HERO SECTION + محرك البحث الذكي ─── -->
+    <header class="relative bg-gray-900 text-white py-14 px-4 bg-cover bg-center" style="background-image: linear-gradient(rgba(15,23,42,0.8), rgba(15,23,42,0.85)), url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80');">
+        <div class="container mx-auto text-center max-w-4xl relative z-10">
+            <h1 class="text-2xl md:text-4xl font-black mb-3 leading-tight text-amber-500">مجموعة النصر للمقاولات والتشطيبات والعقارات</h1>
+            <p class="text-gray-300 mb-8 text-xs md:text-sm max-w-2xl mx-auto">تصفح العروض الحقيقية والمحدثة فورياً في الإسماعيلية والمناطق المجاورة</p>
+            
+            <!-- صندوق الفلترة والتصفية -->
+            <div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 md:p-5 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 max-w-3xl mx-auto transition-colors duration-300">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <!-- النوع -->
+                    <div>
+                        <label class="block text-right text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 mr-1">تصنيف العقار</label>
+                        <select id="filter-category" onchange="applyFilters()" class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold text-xs focus:outline-none">
+                            <option value="الكل">كل التصنيفات</option>
+                            <option value="شقة">شقق للبيع</option>
+                            <option value="منزل">منازل وعمارات</option>
+                            <option value="فيلا">فيلات فاخرة</option>
+                            <option value="أرض">أراضي ومزارع</option>
+                        </select>
+                    </div>
+                    <!-- المنطقة -->
+                    <div>
+                        <label class="block text-right text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 mr-1">المنطقة</label>
+                        <select id="filter-region" onchange="applyFilters()" class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold text-xs focus:outline-none">
+                            <!-- يتم بناؤه تلقائياً بالجافا سكريبت -->
+                        </select>
+                    </div>
+                    <!-- الميزانية -->
+                    <div>
+                        <label class="block text-right text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 mr-1">الحد الأقصى للميزانية (ج.م)</label>
+                        <input id="filter-price" type="number" oninput="applyFilters()" placeholder="مثال: 3000000" class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold text-xs text-left focus:outline-none">
+                    </div>
+                </div>
+                <div class="mt-3 text-right flex justify-between items-center">
+                    <span id="results-count" class="text-[11px] text-amber-700 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-200 dark:border-amber-800/30">جاري جلب الداتا...</span>
+                    <!-- زرار نسخ مصفوفة البيانات الجديد لو شغال كأدمن -->
+                    <button id="export-btn" onclick="exportDataData()" class="hidden bg-gray-900 dark:bg-amber-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow hover:opacity-90">
+                        <i class="fa-solid fa-copy ml-1"></i> نسخ قاعدة البيانات المحدثة للكود
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── قسم عرض العروض العقارية ─── -->
+    <main id="properties-section" class="container mx-auto px-4 py-10">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 border-b dark:border-gray-800 pb-3 gap-3">
+            <h2 class="text-xl md:text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-building text-amber-600"></i> العروض المتاحة حالياً للبيع
+            </h2>
+            <!-- أزرار تصفية سريعة -->
+            <div class="flex flex-wrap gap-1.5">
+                <button onclick="quickFilter('الكل')" class="bg-gray-900 dark:bg-amber-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow">الكل</button>
+                <button onclick="quickFilter('شقة')" class="bg-white dark:bg-gray-800 border dark:border-gray-700 text-gray-700 dark:text-gray-300 text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm">شقق</button>
+                <button onclick="quickFilter('منزل')" class="bg-white dark:bg-gray-800 border dark:border-gray-700 text-gray-700 dark:text-gray-300 text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm">منازل</button>
+                <button onclick="quickFilter('فيلا')" class="bg-white dark:bg-gray-800 border dark:border-gray-700 text-gray-700 dark:text-gray-300 text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm">فيلات</button>
+                <button onclick="quickFilter('أرض')" class="bg-white dark:bg-gray-800 border dark:border-gray-700 text-gray-700 dark:text-gray-300 text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm">أراضي</button>
+            </div>
+        </div>
+        
+        <!-- شبكة عرض كروت العقارات -->
+        <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <!-- ─── مودال إضافة إعلان جديد (مخفي افتراضياً) ─── -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-xl rounded-2xl p-6 shadow-2xl border dark:border-gray-700 max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3 mb-4">
+                <h3 class="text-base font-black text-gray-950 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-circle-plus text-amber-500"></i> إضافة إعلان عقاري جديد للسيستم
+                </h3>
+                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-red-500 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="add-property-form" onsubmit="handleFormSubmit(event)" class="space-y-3.5 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold mb-1">تصنيف العقار *</label>
+                        <select id="add-category" required class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold focus:outline-none">
+                            <option value="شقة">شقة</option>
+                            <option value="منزل">منزل / عمارة / تجاري</option>
+                            <option value="فيلا">فيلا</option>
+                            <option value="أرض">أرض / مزرعة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">المنطقة / الحي *</label>
+                        <input type="text" id="add-region" placeholder="مثال: حي السلام" required class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold mb-1">عنوان الإعلان المختصر *</label>
+                    <input type="text" id="add-title" placeholder="مثال: شقة لقطة 120م واجهة على الشارع الرئيسي" required class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold mb-1">السعر المطلوب (ج.م) *</label>
+                        <input type="number" id="add-price" placeholder="اكتب 0 إذا كان السعر عند التواصل" required class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold text-left focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">رابط صورة العقار (اختياري)</label>
+                        <input type="url" id="add-image" placeholder="سيبها فاضية لوضع صورة ذكية تلقائية" class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold text-left focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block font-bold mb-1">المساحة *</label>
+                        <input type="text" id="add-spec-area" placeholder="مثال: 150 م²" required class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">عدد الغرف / الميزة *</label>
+                        <input type="text" id="add-spec-rooms" placeholder="مثال: 3 غرف نوم" required class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">التشطيب / الحالة *</label>
+                        <input type="text" id="add-spec-finish" placeholder="مثال: سوبر لوكس" required class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold mb-1">التفاصيل والوصف بالكامل *</label>
+                    <textarea id="add-details" rows="3" placeholder="اكتب كل مواصفات العقار، الأوراق القانونية، المزايا الاستثمارية، وأرقام التواصل البديلة إن وجدت..." required class="w-full border dark:border-gray-600 p-2 rounded-xl bg-gray-50 dark:bg-gray-700 font-semibold focus:outline-none"></textarea>
+                </div>
+
+                <div class="pt-2 flex gap-2">
+                    <button type="submit" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl transition shadow">حفظ ونشر العرض فوراً</button>
+                    <button type="button" onclick="closeAdminModal()" class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold px-4 rounded-xl hover:bg-gray-200">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ─── قسم الإدارة والمسؤول (المعاينة) ─── -->
+    <section id="manager-section" class="bg-gray-100 dark:bg-gray-950/40 py-10 px-4 border-t border-b dark:border-gray-800 transition-colors duration-300">
+        <div class="container mx-auto max-w-4xl bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row items-center gap-6 shadow-lg">
+            <div class="w-40 h-40 rounded-xl overflow-hidden shadow-md border-4 border-gray-100 dark:border-gray-700 flex-shrink-0">
+                <img src="mohamednasr.jpg" alt="مسؤول شركة النصر" class="w-full h-full object-cover">
+            </div>
+            <div class="text-center md:text-right flex-grow">
+                <span class="text-amber-600 dark:text-amber-500 font-bold text-xs block mb-1">المعاينة والتعاقد الفوري</span>
+                <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2">النصر للمقاولات والتشطيبات والعقارات</h3>
+                <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+                    جميع العقارات المعروضة تخضع للمعاينة الفنية ومطابقة التراخيص القانونية والحصص الأرضية. تواصل معنا مباشرة لتحديد موعد زيارة ميدانية ومقابلة الملاك وتوقيع العقود الرسمية.
+                </p>
+                <div class="flex flex-wrap justify-center md:justify-start gap-2.5">
+                    <a href="tel:01281669573" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow flex items-center gap-2 transition">
+                        <i class="fa-solid fa-phone"></i> اتصل بنا: 01281669573
+                    </a>
+                    <a href="https://www.facebook.com/share/18zVCVdfN6/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow flex items-center gap-2 transition">
+                        <i class="fa-brands fa-facebook"></i> الصفحة الرسمية
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── الـ FOOTER ─── -->
+    <footer class="bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 py-8 text-center border-t dark:border-gray-900 transition-colors duration-300">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center mb-3">
+                <img src="logo.jpg" alt="لوجو النصر" class="w-14 h-14 object-contain rounded-full border dark:border-gray-800">
+            </div>
+            <p class="text-gray-900 dark:text-white font-black text-sm mb-1">شركة النصر للمقاولات والتشطيبات والعقارات</p>
+            <p class="text-[11px] mb-4">الإسماعيلية - عروض حقيقية، كشوفات هندسية وقانونية متكاملة.</p>
+            <p class="text-[10px] text-gray-400">© 2026 جميع الحقوق محفوظة لشركة النصر | تم التطوير برمجياً بالكامل.</p>
+        </div>
+    </footer>
+
+    <!-- ─── جافا سكريبت لمعالجة البيانات بالكامل ─── -->
+    <script>
+        const targetWhatsApp = "201281669573";
+        const ADMIN_SECRET = "mohamednasr01281669573#kareemmohamednasr";
+        let isAdminAuthenticated = false;
+
+        // مصفوفة البيانات الأساسية الحية للموقع
+        const baseProperties = [
+            {
+                code: "APT-01", category: "شقة", title: "شقة 90 متر في برج بالمخبز الآلي الرئيسي", region: "المخبز الآلي", price: 1450000,
+                details: "أول علوي بأسانسير، تشطيب هاي لوكس، 3 غرف وصالة ومطبخ أمريكي، بعقد نهائي ورخصة وحصة أرض.",
+                specs: { area: "90 م²", rooms: "3 غرف", finish: "هاي لوكس" },
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "APT-02", category: "شقة", title: "شقة 135 متر أرضي بالإسماعيلية الجديدة", region: "الإسماعيلية الجديدة", price: 410000,
+                details: "تخصيص ضباط شرطة، لها حصة بالجراج. المدفوع 150 ألف، ومبلغ التنازل 250 ألف + 10 آلاف مصاريف تنازل، والباقي أقساط مع البنك.",
+                specs: { area: "135 م²", rooms: "حصة جراج", finish: "تخصيص شرطة" },
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "APT-03", category: "شقة", title: "شقة 330 متر بجوار نادي الشجرة", region: "نادي الشجرة", price: 8000000,
+                details: "في أرقى الأبراج، الدور التاسع مش الأخير، 2 حمام وأسانسير وحصة في الأرض. السعر به تفاوض.",
+                specs: { area: "330 م²", rooms: "صالة ضخمة", finish: "نص تشطيب" },
+                image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "APT-04", category: "شقة", title: "شقة ناصية 120 متر بأرض الأندية", region: "أرض الأندية", price: 2500000,
+                details: "بجوار مدرسة الإسراء والمعراج، الدور الرابع بدون أسانسير، 3 غرف وصالة و2 حمام، عدادات كاملة تشطيب عادي. لسرعة البيع.",
+                specs: { area: "120 م²", rooms: "3 غرف + 2 حمام", finish: "تشطيب عادي" },
+                image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "APT-05", category: "شقة", title: "شقة 115 متر أول سكن بشارع العشرين", region: "شارع العشرين", price: 2000000,
+                details: "شارع العشرين الرئيسي، الدور الرابع، 3 غرف نوم وصالة واسعة و2 حمام، تشطيب هاي لوكس فاخر.",
+                specs: { area: "115 م²", rooms: "3 نوم + 2 حمام", finish: "هاي لوكس" },
+                image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "APT-06", category: "شقة", title: "شقة 100 متر أول بلكونة بالمخبز الآلي", region: "المخبز الآلي", price: 1300000,
+                details: "شارع المخبز الآلي الرئيسي، عقد أخضر وغاز طبيعي، غرفتين على الشارع بتهوية ممتازة، تصلح سكن أو مقر إداري.",
+                specs: { area: "100 م²", rooms: "2 غرف ع الشارع", finish: "عقد أخضر + غاز" },
+                image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "APT-07", category: "شقة", title: "شقة 95 متر دور أرضي برج أول سكن", region: "شارع العشرين", price: 0,
+                details: "قريب من شارع العشرين والمخبز الآلي، تصلح سكن مريح أو مكتب شركة مميز. (تواصل فوراً لمعرفة السعر).",
+                specs: { area: "95 م²", rooms: "سكن أو مكتب", finish: "برج أول سكن" },
+                image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "APT-08", category: "شقة", title: "دور كامل 300 متر طريق بورسعيد (إطلالة الحفني)", region: "طريق بورسعيد", price: 3500000,
+                details: "برج جديد ساكن بالكامل قريب من السنترال مطل على جميع الحفني، الدور التاسع بأسانسير شغال. كانت شقتين ومفتوحين على بعض، فيو مفتوح، مساحة كاملة ممتازة للسكن أو الاستثمار وعقد أخضر وحصة أرض.",
+                specs: { area: "300 م²", rooms: "دور كامل مفتوح", finish: "عقد أخضر + أسانسير" },
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "APT-09", category: "شقة", title: "روف مميز تشطيب سوبر لوكس 160 متر بشارع مصر", region: "شارع مصر", price: 650000,
+                details: "المبني 60م والباقي برندة كبيرة فيو مفتوح، ناصية داوود حمدان، متأجر مفروش حالياً، عدادات كاملة وباب منفصل. لقطة سريعة.",
+                specs: { area: "160 م²", rooms: "برندة فيو مفتوح", finish: "سوبر لوكس" },
+                image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-01", category: "منزل", title: "بيت 240 متر في شارع عتاقة الرئيسي", region: "شارع عتاقة", price: 2400000,
+                details: "بسعر الأرض لسرعة البيع، دورين عمدان وشقة قائمة 140م متأجرة بدخل شغال، والخلفي 100م طوب أحمر، كراسة مشروع حدادين ومرافق كاملة.",
+                specs: { area: "240 م²", rooms: "دورين عمدان", finish: "مرافق كاملة" },
+                image: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-02", category: "منزل", title: "بيت 240 متر في القنطرة غرب", region: "القنطرة غرب", price: 3000000,
+                details: "شارع 9م منطقة حيوية، مسجل ومباني حديثة عمدان بإشراف هندسي، الأرضي متشطب هاي لوكس، والتاني شقة خلفية طوب وأمامية على الصبة.",
+                specs: { area: "240 م²", rooms: "إشراف هندسي", finish: "الأرضي هاي لوكس" },
+                image: "https://images.unsplash.com/photo-1592595896551-12b371d546d5?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-03", category: "منزل", title: "بيت 550 متر في راس سدر الاستثماري", region: "خارج الإسماعيلية", price: 3700000,
+                details: "10 دقايق من البحر و7 دقايق للسوق، الأرضي شقة 150م متشطبة والتاني غرفتين وباقي السقف، معاه جنينة مثمرة ومحل 20م مصبوب بره.",
+                specs: { area: "550 م²", rooms: "جنينة + محل", finish: "جاهز ومسجل" },
+                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-04", category: "منزل", title: "بيت 150 متر في المنايف بجوار الكهرباء", region: "المنايف", price: 1750000,
+                details: "5 دقائق من طريق مصر القاهرة، مباني حديثة واقف على البلاط والتشطيب النهائي (تأسيس سباكة كهرباء محارة نجارة)، 3 غرف و2 حمام وصالة وعقد أخضر.",
+                specs: { area: "150 م²", rooms: "3 غرف + 2 حمام", finish: "واقف على البلاط" },
+                image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-05", category: "منزل", title: "بيت ناصية 152 متر عمدان في أبو عطوة", region: "أبو عطوة", price: 2650000,
+                details: "بجوار مسجد التوحيد، واجهة كبيرة على شارعين، فيه محل بحمام وعداد، الأرضي شقة 3 غرف تشطيب لوكس، والأول علوي مبني على الصبة. وعقد أخضر ومرافق كاملة.",
+                specs: { area: "152 م²", rooms: "شقة + محل بحمام", finish: "الأرضي لوكس" },
+                image: "https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-06", category: "منزل", title: "برج كامل استثماري 9 أدوار بشارع العشرين", region: "شارع العشرين", price: 26000000,
+                details: "لظروف السفر، برج 9 أدوار وروف وججاج بشارع العشرين الرئيسي، الشقق 135م نص تشطيب (3 غرف وصالة وحمام ومطبخ وغرفة ماستر)، سلم رخام ومكان أسانسير.",
+                specs: { area: "9 أدوار + جراج", rooms: "شقق 135م", finish: "نص تشطيب" },
+                image: "https://images.unsplash.com/photo-1554435493-93422e8220c8?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-07", category: "منزل", title: "عمارة استثمارية 120 متر بشارع المنصورة", region: "شارع المنصورة", price: 8500000,
+                details: "قريب من البحري، 5 أدوار وروف على شارعين، الأرضي 3 محلات متأجرة، و7 شقق متشطبة سوبر لوكس شغالة وبتجيب دخل محترم، خدمات كاملة.",
+                specs: { area: "120 م²", rooms: "7 شقق + 3 محلات", finish: "سوبر لوكس" },
+                image: "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-08", category: "منزل", title: "بيت 100 متر طوب أحمر في الكيلو 2", region: "الكيلو 2", price: 300000,
+                details: "شارع الحنفية، على شارعين ومؤجر حالياً (يمكن تفليته)، خدمات كاملة مياه وكهرباء قديم وصرف وغاز ماشي بالمكان. سعر المتر 3000ج لسرعة البيع.",
+                specs: { area: "100 م²", rooms: "على شارعين", finish: "طوب أحمر" },
+                image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-09", category: "منزل", title: "عمارة استثمارية فخمة 12 شقة ومحلات بـ 24 أكتوبر", region: "24 أكتوبر", price: 90000000,
+                details: "مساحة أرض 328م² في أرقى أماكن الإسماعيلية. تتكون من 6 أدوار سكني (12 شقة) + دور أرضي محلات تجارية 100% واجهة رئيسية. تشطيب واجهة حجر فرعوني ورخام ممتاز، عقد أخضر مسجل ورخصة بناء سليمة 100% ومرافق كاملة، عمارة ساكنة تماماً وبدخل ممتاز.",
+                specs: { area: "328 م²", rooms: "12 شقة + محلات", finish: "حجر فرعوني ورخام" },
+                image: "https://images.unsplash.com/photo-1554435493-93422e8220c8?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-10", category: "منزل", title: "بدروم تجاري 300 متر + حديقة بالجامعة القديمة", region: "الجامعة القديمة", price: 3500000,
+                details: "شارع 12 ناصية كافيه أرابيكا، بمساحة إجمالية 370م² (بدروم 300م متمحر ومتمحط واقف على الدهانات + حديقة خلفية خاصة 70م). استلام فوري، راكب عداد كهرباء وله حصة في الأرض. موقع مثالي لـ جيم، بلاي ستيشن، كافيه أو مكاتب.",
+                specs: { area: "370 م²", rooms: "بدروم + حديقة", finish: "متمحر واقف ع الدهان" },
+                image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-11", category: "منزل", title: "منزل ناصية 150 متر خلف البلاسي للسيراميك", region: "طريق بورسعيد", price: 3700000,
+                details: "ناصية شارعين 8م × 8م قريب من مسجد آل درويش. منزل حديث عمدان بعقد أخضر وتصالح نهائي واستلام فوري. غاز وطبيعي وكهرباء. الأرضي: 3 محلات وشقة. الأول علوي: شقة سوبر لوكس وشقة طوب أحمر. الثالث: شقتين على السقف جاهزين للبناء.",
+                specs: { area: "150 م²", rooms: "شقق + 3 محلات", finish: "سوبر لوكس + طوب" },
+                image: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-12", category: "منزل", title: "محل تجاري لقطة 120 متر شغال ومؤجر بشارع رضا", region: "حي السلام", price: 2000000,
+                details: "حي السلام - شارع رضا الرئيسي، مساحة 120م تشطيب هاي لوكس بحمام وواجهة كبيرة على شارع حيوي ومفتوح مشروع ناجح بالفعل ومؤجر بعائد مضمون. رخصة محلات تجارية وعقد مسجل نهائي.",
+                specs: { area: "120 م²", rooms: "محل + حمام", finish: "هاي لوكس تجاري" },
+                image: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-13", category: "منزل", title: "منزل عمدان خرسانات 220 متر في عين غصين", region: "عين غصين", price: 1250000,
+                details: "عين غصين في منطقة كتلة سكانية، المساحة الكلية 220م والمبني 150م على عمدان ببردود ومناور للتهوية. الأرضي: مضيافة وصالة ومطبخ وحمام سيراميك سباكة كاملة وكهرباء جاهز للسكن. العلوي: 3 غرف وصالة وحمام ومطبخ متمحر ومصاص واقف ع البلاط.",
+                specs: { area: "220 م²", rooms: "خرسانات نمرة 1", finish: "الأرضي جاهز وسكن" },
+                image: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-14", category: "منزل", title: "منزل سويسي بحديقة مثمرة 800 متر بعين غصين", region: "عين غصين", price: 1000000,
+                details: "عين غصين الشرقية جنب مركز شباب عزت وقريب من طريق السويس ودخلة سرابيوم. مساحة 800م محاطة بسور وبوابة، المنزل 3 غرف وصالة وحمام ومطبخ، عداد كهرباء قديم وعداد مياه، حديقة مثمرة بالكامل حوالين البيت. ورق وضع يد قابل للتقنين.",
+                specs: { area: "800 م²", rooms: "3 غرف + حديقة", finish: "سور وبوابة كاملة" },
+                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "HOU-15", category: "منزل", title: "منزل أرضي 113 متر أول المستقبل قرب الرئيسي", region: "المستقبل", price: 850000,
+                details: "أول المستقبل قريب جداً من الطريق الرئيسي، مساحة 113م دور أرضي طوب وأعمدة خرسانية. التقسيم: 3 غرف نوم، صالة، 2 حمام. متوفر جميع الخدمات والمرافق وعداد مياه راكب.",
+                specs: { area: "113 م²", rooms: "3 نوم + 2 حمام", finish: "طوب وأعمدة خرسانة" },
+                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "VIL-01", category: "فيلا", title: "فيلا فاخرة بقلب الضبيعة على الرئيسي", region: "الضبيعة", price: 3800000,
+                details: "أمام الهيئة مباشرة، 5 قيراط والمبنى 200 متر دورين على الطوب الخرساني. الأرضي ريسبشن ومطبخ أمريكي، التاني 6 غرف نوم ببرندات محاطة بشجر مانجا. كاش أو قسط.",
+                specs: { area: "5 قيراط", rooms: "6 غرف نوم + برندات", finish: "طوب خرساني فخم" },
+                image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "LND-01", category: "أرض", title: "مزرعة 5 فدادين مسجلة بجمعية العاشر", region: "جمعية العاشر", price: 7500000,
+                details: "عقد أخضر مسجل على الشارع الرئيسي، سور كامل وبوابة، فيها مبنى سكني 3 أدوار جاهز، صالحة لجميع المشاريع ومجهزة بالخدمات.",
+                specs: { area: "5 فدادين", rooms: "مبنى 3 أدوار", finish: "سور وبوابة كاملة" },
+                image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "LND-02", category: "أرض", title: "أرض زراعية نص فدان على كوبري المستقبل", region: "كوبري المستقبل", price: 1800000,
+                details: "على الكوبري مباشرة وقريبة من طريق مصر (50 متر)، عقد أخضر وري نيلي وتربة صينية ممتازة، تشتمل مباني قائمة وقابلة للتحويل كردون مباني.",
+                specs: { area: "12 قيراط", rooms: "مباني قائمة", finish: "ري نيلي ممتاز" },
+                image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "LND-03", category: "أرض", title: "10 فدادين زيتون بالمحصول بوادي التكنولوجيا", region: "وادي التكنولوجيا", price: 5000000,
+                details: "البر الثاني تبت الشجرة على الأسفلت الرئيسي، تقنين جاهز ومحطة طاقة شمسية وفيها 3 بيوت و3 حظائر. البيع مستعجل لظروف خاصة وتسهيلات قسط.",
+                specs: { area: "10 فدادين", rooms: "3 بيوت + 3 حظائر", finish: "محطة طاقة شمسية" },
+                image: "https://images.unsplash.com/photo-1444858291040-58ea7f279272?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                code: "LND-04", category: "أرض", title: "فدان أرض كامل على طريق السويس مباشرة", region: "طريق السويس", price: 500000,
+                details: "10 دقايق من الإسماعيلية بعد كوبري سيناء، وضع يد مسجل شهر عقاري وقابل للتقنين، فيه بيت 175م وعداد كهرباء. يصلح زراعة ومواشي.",
+                specs: { area: "1 فدان", rooms: "بيت 175م قائم", finish: "عداد كهرباء رسمي" },
+                image: "https://images.unsplash.com/photo-1622383563227-04401ab4e5ea?auto=format&fit=crop&w=500&q=80"
+            }
+        ];
+
+        // مصفوفة البيانات النشطة المدمجة (الأساسية + المضافة محلياً)
+        let propertiesData = [];
+
+        // دالة تحميل البيانات ودمج إعلانات الـ LocalStorage إن وجدت
+        function loadProperties() {
+            const localItems = localStorage.getItem('alnasr_custom_properties');
+            if (localItems) {
+                try {
+                    const parsed = JSON.parse(localItems);
+                    propertiesData = [...baseProperties, ...parsed];
+                } catch(e) {
+                    propertiesData = [...baseProperties];
+                }
+            } else {
+                propertiesData = [...baseProperties];
+            }
+        }
+
+        // دالة استخراج المناطق تلقائياً وتغذية قائمة الفلاتر
+        function buildRegionFilter() {
+            const select = document.getElementById('filter-region');
+            const currentVal = select.value || "الكل";
+            const regions = new Set(["الكل"]);
+            propertiesData.forEach(item => { if(item.region) regions.add(item.region); });
+            
+            select.innerHTML = "";
+            regions.forEach(reg => {
+                const opt = document.createElement('option');
+                opt.value = reg;
+                opt.textContent = reg === "الكل" ? "كل المناطق" : reg;
+                select.appendChild(opt);
+            });
+            select.value = regions.has(currentVal) ? currentVal : "الكل";
+        }
+
+        // دالة طباعة وبناء كروت العقارات في الصفحة
+        function displayItems(array) {
+            const grid = document.getElementById('properties-grid');
+            const countBadge = document.getElementById('results-count');
+            grid.innerHTML = "";
+            
+            countBadge.textContent = `تم العثور على: ${array.length} عرض عقاري متاح`;
+
+            if(array.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border-2 border-dashed dark:border-gray-700 shadow-sm">
+                        <i class="fa-solid fa-building-circle-exclamation text-gray-300 dark:text-gray-600 text-5xl mb-2"></i>
+                        <p class="text-gray-500 dark:text-gray-400 font-bold">لا توجد نتائج تطابق خيارات البحث الحالية.</p>
+                    </div>`;
+                return;
+            }
+
+            array.forEach(item => {
+                const priceText = item.price === 0 ? "تواصل لمعرفة السعر" : `${item.price.toLocaleString()} ج.م`;
+                
+                const cardHTML = `
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col justify-between hover:shadow-2xl transition duration-300">
+                        <div class="relative">
+                            <img src="${item.image}" alt="${item.title}" class="w-full h-48 object-cover">
+                            <span class="absolute top-2.5 right-2.5 bg-black/60 backdrop-blur-sm text-amber-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-amber-500/20">${item.category}</span>
+                            <span class="absolute bottom-2.5 left-2.5 bg-amber-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow">كود: ${item.code}</span>
+                        </div>
+                        <div class="p-4 flex-grow">
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-1.5 text-right line-clamp-1">${item.title}</h3>
+                            <p class="text-amber-600 dark:text-amber-500 font-extrabold text-base text-right mb-2.5 tracking-tight">${priceText}</p>
+                            <p class="text-[11px] text-gray-600 dark:text-gray-300 text-right leading-relaxed mb-3 bg-gray-50 dark:bg-gray-900/60 p-2.5 rounded-xl border dark:border-transparent line-clamp-3">${item.details}</p>
+                            
+                            <div class="grid grid-cols-3 gap-1 text-center text-[10px] text-gray-700 dark:text-gray-300 border-t dark:border-gray-700 pt-2.5">
+                                <div class="bg-gray-50 dark:bg-gray-900/40 p-1 rounded-lg"><i class="fa-solid fa-ruler-combined text-amber-600 mb-1 block"></i> ${item.specs.area}</div>
+                                <div class="bg-gray-50 dark:bg-gray-900/40 p-1 rounded-lg"><i class="fa-solid fa-circle-info text-amber-600 mb-1 block"></i> ${item.specs.rooms}</div>
+                                <div class="bg-gray-50 dark:bg-gray-900/40 p-1 rounded-lg"><i class="fa-solid fa-paint-roller text-amber-600 mb-1 block"></i> ${item.specs.finish}</div>
+                            </div>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <button onclick="triggerWhatsApp('${item.code}', '${item.title}')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5 text-xs shadow">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> طلب معاينة وتفاصيل
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+        }
+
+        // الفلترة المركبة
+        function applyFilters() {
+            const category = document.getElementById('filter-category').value;
+            const region = document.getElementById('filter-region').value;
+            const maxPrice = document.getElementById('filter-price').value;
+
+            const filtered = propertiesData.filter(item => {
+                const matchCategory = (category === "الكل" || item.category === category);
+                const matchRegion = (region === "الكل" || item.region === region);
+                const matchPrice = (!maxPrice || item.price === 0 || item.price <= parseFloat(maxPrice));
+                return matchCategory && matchRegion && matchPrice;
+            });
+
+            displayItems(filtered);
+        }
+
+        function quickFilter(cat) {
+            document.getElementById('filter-category').value = cat;
+            applyFilters();
+        }
+
+        function triggerWhatsApp(code, title) {
+            const text = `السلام عليكم يا فندم، أنا مهتم بمعاينة العقار المذكور في موقع النصر:\n- كود العقار: ${code}\n- اسم العقار: ${title}\nبرجاء إفادتي بالتفاصيل وميعاد المعاينة المتاحة.`;
+            window.open(`https://wa.me/${targetWhatsApp}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // ─── منطق إدارة لوحة التحكم السرية ───
+        function checkAdminPassword() {
+            if (isAdminAuthenticated) {
+                openAdminModal();
+                return;
+            }
+            const password = prompt("برجاء إدخال كلمة المرور السرية لإضافة العقارات:");
+            if (password === ADMIN_SECRET) {
+                isAdminAuthenticated = true;
+                document.getElementById('export-btn').classList.remove('hidden');
+                alert("تم التحقق بنجاح! تم تفعيل صلاحيات الإدارة.");
+                openAdminModal();
+            } else if (password !== null) {
+                alert("كلمة المرور خاطئة! غير مسموح لك بالتعديل.");
+            }
+        }
+
+        function openAdminModal() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+            document.getElementById('add-property-form').reset();
+        }
+
+        // معالجة وحفظ الفورم الجديد
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const category = document.getElementById('add-category').value;
+            const region = document.getElementById('add-region').value.trim();
+            const title = document.getElementById('add-title').value.trim();
+            const price = parseFloat(document.getElementById('add-price').value) || 0;
+            let image = document.getElementById('add-image').value.trim();
+            const area = document.getElementById('add-spec-area').value.trim();
+            const rooms = document.getElementById('add-spec-rooms').value.trim();
+            const finish = document.getElementById('add-spec-finish').value.trim();
+            const details = document.getElementById('add-details').value.trim();
+
+            // لو ساب الصورة فاضية، نختارله صورة افتراضية فخمة حسب التصنيف
+            if (!image) {
+                if(category === "شقة") image = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=500&q=80";
+                else if(category === "منزل") image = "https://images.unsplash.com/photo-1554435493-93422e8220c8?auto=format&fit=crop&w=500&q=80";
+                else if(category === "فيلا") image = "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=500&q=80";
+                else image = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=500&q=80";
+            }
+
+            // توليد كود فريد تلقائياً للعقار الجديد
+            let prefix = "APT";
+            if(category === "منزل") prefix = "HOU";
+            if(category === "فيلا") prefix = "VIL";
+            if(category === "أرض") prefix = "LND";
+            const randomCode = `${prefix}-${Math.floor(10 + Math.random() * 90)}`;
+
+            const newProperty = {
+                code: randomCode,
+                category: category,
+                title: title,
+                region: region,
+                price: price,
+                details: details,
+                specs: { area: area, rooms: rooms, finish: finish },
+                image: image
+            };
+
+            // حفظ المضاف في الـ Local Storage الخاص بمتصفحك
+            let customItems = localStorage.getItem('alnasr_custom_properties');
+            let customArray = customItems ? JSON.parse(customItems) : [];
+            customArray.push(newProperty);
+            localStorage.setItem('alnasr_custom_properties', JSON.stringify(customArray));
+
+            // إعادة تحديث الواجهة والـ State الجاري
+            propertiesData.push(newProperty);
+            buildRegionFilter();
+            applyFilters();
+            
+            alert(`تم إضافة العقار بنجاح تحت كود: ${randomCode} ومتاح للعرض فوراً!`);
+            closeAdminModal();
+        }
+
+        // ميزة عبقرية: نسخ البيانات كاملة وجاهزة لتحديث ملف index.html الأصلي للـ GitHub
+        function exportDataData() {
+            const output = JSON.stringify(propertiesData, null, 4);
+            navigator.clipboard.writeText(output).then(() => {
+                alert("يا واد يا لعيب! تم نسخ المصفوفة البرمجية الكاملة والمحدثة لكل العقارات (القديمة + الجديدة). تقدر تفتح ملف الـ index.html عندك في الكمبيوتر وتبدلها بـ baseProperties عشان الشغل يتسيف للكل على النت علطول!");
+            }).catch(err => {
+                console.error("فشل النسخ تلقائياً: ", err);
+            });
+        }
+
+        // ─── منطق تشغيل الـ Dark / Light Mode ───
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
+        }
+
+        function updateThemeIcon(isDark) {
+            const icon = document.getElementById('theme-icon');
+            if (isDark) {
+                icon.className = 'fa-solid fa-sun text-amber-400 text-base';
+            } else {
+                icon.className = 'fa-solid fa-moon text-gray-600 text-base';
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+                updateThemeIcon(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                updateThemeIcon(false);
+            }
+        }
+
+        // بدء التشغيل الرسمي
+        window.onload = () => {
+            initTheme();
+            loadProperties();
+            buildRegionFilter();
+            displayItems(propertiesData);
+        };
+    </script>
+</body>
+</html>
